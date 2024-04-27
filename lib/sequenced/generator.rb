@@ -12,7 +12,7 @@ module Sequenced
 
     def set
       return if skip? || id_set?
-      lock_table
+
       record.send(:"#{column}=", next_id)
     end
 
@@ -48,12 +48,6 @@ module Sequenced
     end
 
     private
-
-    def lock_table
-      return unless postgresql?
-      
-      build_scope(*scope) { base_relation.select(1).lock(true) }.load
-    end
 
     def postgresql?
       defined?(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter) &&
